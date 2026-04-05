@@ -1,0 +1,12 @@
+# Ignore everything
+*
+
+# Except
+!settings.json
+!commands/
+!commands/*
+!skills/
+!skills/*
+!agents/
+!agents/*
+
