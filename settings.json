@@ -14,7 +14,7 @@
     ]
   },
   "alwaysThinkingEnabled": true,
-  "effortLevel": "high",
+  "effortLevel": "max",
   "statusLine": {
     "type": "command",
     "command": "npx ccusage statusline"
