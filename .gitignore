@@ -5,8 +5,13 @@
 !settings.json
 !commands/
 !commands/*
+!commands/*/
+!commands/*/*
 !skills/
 !skills/*
+!skills/*/
+!skills/*/*
 !agents/
 !agents/*
-
+!agents/*/
+!agents/*/*
