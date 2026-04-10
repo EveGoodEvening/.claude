@@ -1,6 +1,6 @@
 ---
 name: codex-ask
-description: This skill should be used when the user asks to "ask codex", "get codex's opinion", "ask codex to plan", "ask codex to debug", "codex help me", "what does codex think", or wants a second opinion from OpenAI Codex CLI on a question, implementation plan, or debugging session. Supports three modes - question, plan, and debug.
+description: This skill should be used when the user asks to "ask codex", "get codex's opinion", "ask codex to plan", "ask codex to debug", "codex help me", "what does codex think", "resume codex", "continue asking codex", "follow up with codex", or wants a second opinion from OpenAI Codex CLI on a question, implementation plan, or debugging session. Supports three modes (question, plan, debug) with session resume for multi-turn discussions.
 allowed-tools:
   - Bash
   - Read
@@ -11,11 +11,13 @@ allowed-tools:
   - AskUserQuestion
 ---
 
-Get an independent answer, implementation plan, or debugging analysis from OpenAI's Codex CLI using GPT-5.4 with maximum reasoning effort. Codex acts as a principal engineer providing a second opinion. You have more context than Codex — use your own judgment to decide what to incorporate.
+Get an independent answer, implementation plan, or debugging analysis from OpenAI's Codex CLI using GPT-5.4 with maximum reasoning effort. Codex acts as a principal engineer providing a second opinion. You have more context than Codex — use your own judgment to decide what to incorporate. Sessions can be resumed for multi-turn discussions — see Session Management below.
 
 ## Invoking Codex
 
-Use `codex exec` to run a one-shot query. Always write output to a temp file for reliable capture. Select the sandbox level based on the mode.
+### First call (new session)
+
+Use `codex exec` to start a new session. Always write output to a temp file for reliable capture. Select the sandbox level based on the mode.
 
 ```bash
 TMPFILE=$(mktemp /tmp/codex-ask.XXXXXXXX)
@@ -24,23 +26,64 @@ codex exec \
   -m gpt-5.4 \
   -c 'model_reasoning_effort="xhigh"' \
   -s "$SANDBOX" \
-  --ephemeral \
   -o "$TMPFILE" \
   "$PROMPT"
 cat "$TMPFILE"
 rm "$TMPFILE"
 ```
 
-**Flags explained:**
+After execution, look for the session ID in the stdout/stderr output (a line containing `session id: <uuid>` or similar). **Remember this session ID in your conversation context** — you will need it if the user wants to follow up.
+
+### Resume call (continuing a session)
+
+When the user wants to follow up on a previous Codex discussion, use `codex exec resume` with the stored session ID:
+
+```bash
+TMPFILE=$(mktemp /tmp/codex-ask.XXXXXXXX)
+[ -f "$HOME/.codex/.env" ] && . "$HOME/.codex/.env"
+codex exec resume "$SESSION_ID" \
+  -m gpt-5.4 \
+  -c 'model_reasoning_effort="xhigh"' \
+  -o "$TMPFILE" \
+  "$FOLLOW_UP_PROMPT"
+cat "$TMPFILE"
+rm "$TMPFILE"
+```
+
+**Note:** `codex exec resume` does not accept the `-s` (sandbox) flag. The sandbox level is inherited from the original session. Since all codex-ask modes use `danger-full-access`, this is not an issue.
+
+**Fallback:** If resume fails because the session is expired or not found, start a fresh session with the prior discussion context embedded in the prompt. Remember the new session ID for future follow-ups. Report to the user that the original session could not be resumed and a new one was started. If the error is auth, network, or config related, do **not** fall back — report the error and let the user resolve it (consistent with the error handling rule below).
+
+### Flags explained
+
 - `-m gpt-5.4` — model selection
 - `-c 'model_reasoning_effort="xhigh"'` — maximum thinking effort
 - `-s "$SANDBOX"` — sandbox level, varies by mode (see below)
-- `--ephemeral` — no conversation persistence, clean context
-- `-o "$TMPFILE"` — write output to file (avoids noisy stdout metadata)
+- `-o "$TMPFILE"` — write the last assistant message to a file for clean capture. Note: stdout still contains metadata (headers, `session id:` line) which is needed for session management
 
 **Critical — temp file creation:** Use `mktemp` exactly as shown. Do NOT add a file extension after the X's — `mktemp` only replaces trailing X's. The template `/tmp/codex-ask.XXXXXXXX` (no extension) must be used verbatim.
 
 **Error handling:** If codex returns a non-zero exit code, read stderr, report the error to the user, and do not retry automatically.
+
+## Session Management
+
+### Detecting resume vs new question
+
+A follow-up is when the user wants to continue a previous Codex discussion. Indicators:
+- **Explicit:** "resume codex", "continue with codex", "follow up with codex", "ask codex again about..."
+- **Contextual:** the user's question directly references or builds on a previous Codex response in this conversation, and you have a stored session ID
+
+If ambiguous, ask the user whether they want to resume the previous session or start fresh.
+
+### Remembering the session
+
+After each first call, remember the session ID in your conversation context. You do not need to persist it to a file — the session only needs to survive within the current Claude conversation.
+
+If you cannot find a session ID in the Codex output, the session cannot be resumed. Inform the user and proceed with a fresh call on follow-up. Don't try `codex exec resume --last` as a fallback (resumes the most recent session), because multiple Codex sessions may be started in the same conversation, or wrose, different conversations (user migh have multiple task running) — it may pick the wrong one.
+
+### Mode switching on resume
+
+A resumed session can switch modes freely. For example, the user might start with a Question, then follow up with "ask codex to debug that issue" — this switches to Debug mode. Adjust the **prompt format** to match the new mode. The sandbox level carries over from the original session (all modes use `danger-full-access`, so this is seamless).
 
 ## Three Modes
 
@@ -204,6 +247,26 @@ Run `git diff` to see recent changes. Read `framework/src/main/java/org/tron/cor
 
 [... format instructions ...]
 ```
+
+### 5. Resume prompt (for follow-ups only)
+
+When resuming a session, the prompt can be shorter — Codex already has the prior context. Focus on:
+- What the user wants to follow up on
+- Any new information or constraints since the last round
+- The new mode's output format if the mode changed
+
+Example resume prompt:
+```
+Following up on our previous discussion about the storage layer migration:
+
+The user wants to understand the error handling paths more deeply. Specifically, what happens when the gRPC connection to the remote storage service drops mid-transaction?
+
+Read `src/storage/remote/grpc_client.rs` if you haven't already.
+
+[... format instructions for the current mode ...]
+```
+
+Do NOT re-embed the full context from the first call — Codex retains the conversation history via session resumption.
 
 ### Important:
 - Always tell Codex it can run git commands if it needs more context.
