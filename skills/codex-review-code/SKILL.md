@@ -13,6 +13,8 @@ allowed-tools:
 
 Get an independent code review from OpenAI's Codex CLI using GPT-5.4 with maximum reasoning effort. Codex acts as a principal engineer providing a second opinion. You have more context than Codex — use your own judgment to decide what feedback to incorporate.
 
+**Stop hook integration:** A Stop hook may trigger this skill. After completing a review (and any fixes), you must save a diff-hash marker (see "After the review is complete") so the hook won't re-trigger for already-reviewed changes. If the hook triggers again after you've saved the marker, it means NEW changes were made — go for a new review round.
+
 ## Invoking Codex
 
 Use `codex exec` to run a one-shot review. Always write output to a temp file for reliable capture.
@@ -165,6 +167,18 @@ If Codex couldn't complete the review (auth issues, timeout, can't access files)
 - Report the error clearly to the user
 - Do NOT retry automatically
 - Suggest what the user might check (codex auth, file permissions, etc.)
+
+## After the review is complete
+
+Save a diff-hash marker so the Stop hook won't re-trigger for already-reviewed changes:
+
+```bash
+H=$(command -v shasum >/dev/null 2>&1 && echo "shasum -a 256" || echo "sha256sum")
+REPO_ID=$(git rev-parse --show-toplevel 2>/dev/null | $H | cut -d' ' -f1 | head -c 12)
+(git diff HEAD 2>/dev/null; git ls-files --others --exclude-standard 2>/dev/null | LC_ALL=C sort | while IFS= read -r f; do printf '\0%s\0' "$f"; cat "$f"; done) | $H | cut -d' ' -f1 > "/tmp/.codex-last-reviewed-hash-${REPO_ID}"
+```
+
+If you make additional fixes after saving the hash, save it again.
 
 ## What NOT to do
 
