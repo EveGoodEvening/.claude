@@ -23,7 +23,7 @@ TMPFILE=$(mktemp /tmp/codex-review.XXXXXXXX)
 codex exec \
   -m gpt-5.4 \
   -c 'model_reasoning_effort="xhigh"' \
-  -s read-only \
+  -s danger-full-access \
   --ephemeral \
   -o "$TMPFILE" \
   "$PROMPT"
@@ -34,7 +34,7 @@ rm "$TMPFILE"
 **Flags explained:**
 - `-m gpt-5.4` — model selection (always use this for reviews)
 - `-c 'model_reasoning_effort="xhigh"'` — maximum thinking effort, principal-engineer level
-- `-s read-only` — Codex can read the codebase but cannot modify any files (critical for reviews)
+- `-s danger-full-access` — sandbox policy. Options: `read-only`, `workspace-write`, `danger-full-access`. Use `danger-full-access` in case Codex needs to run commands (e.g., build, lint, tests) to verify its findings.
 - `--ephemeral` — no conversation persistence, clean context
 - `-o "$TMPFILE"` — write output to file (avoids noisy stdout metadata)
 
