@@ -1,1 +1,0 @@
-!mkdir -p ~/.codex/prompts && cp .claude/commands/*.md ~/.codex/prompts/ && sed -i '' 's/ultrathink/think harder/g' ~/.codex/prompts/*.md
