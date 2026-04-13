@@ -13,13 +13,10 @@
       "/tmp"
     ]
   },
-  "alwaysThinkingEnabled": true,
-  "effortLevel": "max",
   "statusLine": {
     "type": "command",
     "command": "npx ccusage statusline"
   },
-  "skipDangerousModePermissionPrompt": true,
   "enabledPlugins": {
     "feature-dev@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
@@ -47,6 +44,9 @@
       }
     }
   },
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "medium",
+  "skipDangerousModePermissionPrompt": true,
   "hooks-backup": {
     "Stop": [
       {
