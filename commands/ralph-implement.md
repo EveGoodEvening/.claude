@@ -7,6 +7,7 @@ Each iteration:
 1. **Read** — Read $1 (design planning) and $2 (progress tracker). Identify unchecked `- [ ]` tasks.
    - If ALL tasks are `[x]` → output `<promise>IMPLEMENTATION COMPLETE</promise>` and STOP.
 2. **Implement** — Work through unchecked tasks. Multiple related tasks per iteration is fine — use judgment on what forms a coherent chunk. Don't force yourself to stop mid-work if the next task is closely related.
+   - If proceeding would require guessing — unclear design intent, ambiguous API choice, non-obvious edge-case handling, or choosing between materially different approaches — invoke `/codex-ask` to discuss before committing. Resume an existing codex session only if there's a known prior session on the same unresolved question; otherwise start fresh.
 3. **Verify** — Run `cargo check` (Rust) or the relevant build command. Run related tests. The goal is that the iteration ends in a compilable, test-passing state — but intermediate non-compilation during implementation is acceptable.
 4. **Mark** completed tasks `[x]` in $2.
 5. **Review** — Run `codex-review-code` skill to check:
