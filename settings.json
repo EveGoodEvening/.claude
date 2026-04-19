@@ -1,4 +1,12 @@
 {
+  "alwaysThinkingEnabled": true,
+  "model": "claude-opus-4-6",
+  "env": {
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+  },
+  "effortLevel": "medium",
+  "showClearContextOnPlanAccept": true,
+  "skipDangerousModePermissionPrompt": true,
   "permissions": {
     "allow": [
       "WebSearch"
@@ -12,10 +20,6 @@
     "additionalDirectories": [
       "/tmp"
     ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "npx ccusage statusline"
   },
   "enabledPlugins": {
     "feature-dev@claude-plugins-official": true,
@@ -44,15 +48,10 @@
       }
     }
   },
-  "alwaysThinkingEnabled": true,
-  "effortLevel": "xhigh",
-  "env": {
-    "CLAUDE_CODE_DISABLE_1M_CONTEXT": "1",
-    "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
-    "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+  "statusLine-backup": {
+    "type": "command",
+    "command": "npx ccusage statusline"
   },
-  "skipDangerousModePermissionPrompt": true,
   "hooks-backup": {
     "Stop": [
       {
