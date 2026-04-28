@@ -26,14 +26,14 @@ Run these commands yourself before writing the PR:
 **IMPORTANT: Output raw Markdown source text inside a fenced code block (```markdown ... ```), NOT rendered Markdown. The user needs to copy-paste the raw Markdown into a PR form.**
 
 ```markdown
-## Title
+# Title
 <short title, under 70 chars, in the style of existing PRs>
 
-## Description
-### Summary
+# Description
+## Summary
 <1-3 bullet points describing what changed and why>
 
-### Changes
+## Changes
 <bullet list of notable file/module changes>
 ```
 
