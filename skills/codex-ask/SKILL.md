@@ -11,7 +11,7 @@ allowed-tools:
   - AskUserQuestion
 ---
 
-Get an independent answer, implementation plan, or debugging analysis from OpenAI's Codex CLI using GPT-5.4 with maximum reasoning effort. Codex acts as a principal engineer providing a second opinion. You have more context than Codex — use your own judgment to decide what to incorporate. Sessions can be resumed for multi-turn discussions — see Session Management below.
+Get an independent answer, implementation plan, or debugging analysis from OpenAI's Codex CLI using gpt-5.5 with maximum reasoning effort. Codex acts as a principal engineer providing a second opinion. You have more context than Codex — use your own judgment to decide what to incorporate. Sessions can be resumed for multi-turn discussions — see Session Management below.
 
 ## Invoking Codex
 
@@ -23,7 +23,7 @@ Use `codex exec` to start a new session. Always write output to a temp file for 
 TMPFILE=$(mktemp /tmp/codex-ask.XXXXXXXX)
 [ -f "$HOME/.codex/.env" ] && . "$HOME/.codex/.env"
 codex exec \
-  -m gpt-5.4 \
+  -m gpt-5.5 \
   -c 'model_reasoning_effort="xhigh"' \
   -s "$SANDBOX" \
   -o "$TMPFILE" \
@@ -42,7 +42,7 @@ When the user wants to follow up on a previous Codex discussion, use `codex exec
 TMPFILE=$(mktemp /tmp/codex-ask.XXXXXXXX)
 [ -f "$HOME/.codex/.env" ] && . "$HOME/.codex/.env"
 codex exec resume "$SESSION_ID" \
-  -m gpt-5.4 \
+  -m gpt-5.5 \
   -c 'model_reasoning_effort="xhigh"' \
   -o "$TMPFILE" \
   "$FOLLOW_UP_PROMPT"
@@ -56,7 +56,7 @@ rm "$TMPFILE"
 
 ### Flags explained
 
-- `-m gpt-5.4` — model selection
+- `-m gpt-5.5` — model selection
 - `-c 'model_reasoning_effort="xhigh"'` — maximum thinking effort
 - `-s "$SANDBOX"` — sandbox level, varies by mode (see below)
 - `-o "$TMPFILE"` — write the last assistant message to a file for clean capture. Note: stdout still contains metadata (headers, `session id:` line) which is needed for session management

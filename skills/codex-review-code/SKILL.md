@@ -1,6 +1,6 @@
 ---
 name: codex-review-code
-description: Get a second-opinion code review from OpenAI Codex CLI (GPT-5.4 xhigh). Use when the user asks for a code review, wants a second pair of eyes, or you want to validate significant changes.
+description: Get a second-opinion code review from OpenAI Codex CLI (gpt-5.5 xhigh). Use when the user asks for a code review, wants a second pair of eyes, or you want to validate significant changes.
 allowed-tools:
   - Bash
   - Read
@@ -11,7 +11,7 @@ allowed-tools:
   - AskUserQuestion
 ---
 
-Get an independent code review from OpenAI's Codex CLI using GPT-5.4 with maximum reasoning effort. Codex acts as a principal engineer providing a second opinion. You have more context than Codex — use your own judgment to decide what feedback to incorporate.
+Get an independent code review from OpenAI's Codex CLI using gpt-5.5 with maximum reasoning effort. Codex acts as a principal engineer providing a second opinion. You have more context than Codex — use your own judgment to decide what feedback to incorporate.
 
 **Stop hook integration:** A Stop hook may trigger this skill. After completing a review (and any fixes), you must save a diff-hash marker (see "After the review is complete") so the hook won't re-trigger for already-reviewed changes. If the hook triggers again after you've saved the marker, it means NEW changes were made — go for a new review round.
 
@@ -23,7 +23,7 @@ Use `codex exec` to run a one-shot review. Always write output to a temp file fo
 TMPFILE=$(mktemp /tmp/codex-review.XXXXXXXX)
 [ -f "$HOME/.codex/.env" ] && . "$HOME/.codex/.env"
 codex exec \
-  -m gpt-5.4 \
+  -m gpt-5.5 \
   -c 'model_reasoning_effort="xhigh"' \
   -s danger-full-access \
   --ephemeral \
@@ -34,7 +34,7 @@ rm "$TMPFILE"
 ```
 
 **Flags explained:**
-- `-m gpt-5.4` — model selection (always use this for reviews)
+- `-m gpt-5.5` — model selection (always use this for reviews)
 - `-c 'model_reasoning_effort="xhigh"'` — maximum thinking effort, principal-engineer level
 - `-s danger-full-access` — sandbox policy. Options: `read-only`, `workspace-write`, `danger-full-access`. Use `danger-full-access` in case Codex needs to run commands (e.g., build, lint, tests) to verify its findings.
 - `--ephemeral` — no conversation persistence, clean context
