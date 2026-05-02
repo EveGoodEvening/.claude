@@ -21,15 +21,17 @@ Use `codex exec` to start a new session. Always write output to a temp file for 
 
 ```bash
 TMPFILE=$(mktemp /tmp/codex-ask.XXXXXXXX)
+ERRFILE=$(mktemp /tmp/codex-ask-err.XXXXXXXX)
+trap 'rm -f "$TMPFILE" "$ERRFILE"' EXIT
+
 [ -f "$HOME/.codex/.env" ] && . "$HOME/.codex/.env"
 codex exec \
   -m gpt-5.5 \
   -c 'model_reasoning_effort="xhigh"' \
   -s "$SANDBOX" \
   -o "$TMPFILE" \
-  "$PROMPT"
+  "$PROMPT" 2> "$ERRFILE"
 cat "$TMPFILE"
-rm "$TMPFILE"
 ```
 
 After execution, look for the session ID in the stdout/stderr output (a line containing `session id: <uuid>` or similar). **Remember this session ID in your conversation context** — you will need it if the user wants to follow up.
@@ -40,14 +42,16 @@ When the user wants to follow up on a previous Codex discussion, use `codex exec
 
 ```bash
 TMPFILE=$(mktemp /tmp/codex-ask.XXXXXXXX)
+ERRFILE=$(mktemp /tmp/codex-ask-err.XXXXXXXX)
+trap 'rm -f "$TMPFILE" "$ERRFILE"' EXIT
+
 [ -f "$HOME/.codex/.env" ] && . "$HOME/.codex/.env"
 codex exec resume "$SESSION_ID" \
   -m gpt-5.5 \
   -c 'model_reasoning_effort="xhigh"' \
   -o "$TMPFILE" \
-  "$FOLLOW_UP_PROMPT"
+  "$FOLLOW_UP_PROMPT" 2> "$ERRFILE"
 cat "$TMPFILE"
-rm "$TMPFILE"
 ```
 
 **Note:** `codex exec resume` does not accept the `-s` (sandbox) flag. The sandbox level is inherited from the original session. Since all codex-ask modes use `danger-full-access`, this is not an issue.

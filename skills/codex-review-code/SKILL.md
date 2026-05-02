@@ -21,6 +21,9 @@ Use `codex exec` to run a one-shot review. Always write output to a temp file fo
 
 ```bash
 TMPFILE=$(mktemp /tmp/codex-review.XXXXXXXX)
+ERRFILE=$(mktemp /tmp/codex-review-err.XXXXXXXX)
+trap 'rm -f "$TMPFILE" "$ERRFILE"' EXIT
+
 [ -f "$HOME/.codex/.env" ] && . "$HOME/.codex/.env"
 codex exec \
   -m gpt-5.5 \
@@ -28,9 +31,8 @@ codex exec \
   -s danger-full-access \
   --ephemeral \
   -o "$TMPFILE" \
-  "$PROMPT"
+  "$PROMPT" 2> "$ERRFILE"
 cat "$TMPFILE"
-rm "$TMPFILE"
 ```
 
 **Flags explained:**
