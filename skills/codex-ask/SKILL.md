@@ -22,7 +22,6 @@ Use `codex exec` to start a new session. Always write output to a temp file for 
 ```bash
 TMPFILE=$(mktemp /tmp/codex-ask.XXXXXXXX)
 ERRFILE=$(mktemp /tmp/codex-ask-err.XXXXXXXX)
-trap 'rm -f "$TMPFILE" "$ERRFILE"' EXIT
 
 [ -f "$HOME/.codex/.env" ] && . "$HOME/.codex/.env"
 codex exec \
@@ -43,7 +42,6 @@ When the user wants to follow up on a previous Codex discussion, use `codex exec
 ```bash
 TMPFILE=$(mktemp /tmp/codex-ask.XXXXXXXX)
 ERRFILE=$(mktemp /tmp/codex-ask-err.XXXXXXXX)
-trap 'rm -f "$TMPFILE" "$ERRFILE"' EXIT
 
 [ -f "$HOME/.codex/.env" ] && . "$HOME/.codex/.env"
 codex exec resume "$SESSION_ID" \
