@@ -2,6 +2,7 @@
 *
 
 # Except
+!.env.example
 !CLAUDE.md
 !settings.json
 !commands/
