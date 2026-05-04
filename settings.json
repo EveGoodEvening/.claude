@@ -1,9 +1,4 @@
 {
-  "alwaysThinkingEnabled": true,
-  "model": "claude-opus-4-6[1m]",
-  "effortLevel": "medium",
-  "showClearContextOnPlanAccept": true,
-  "skipDangerousModePermissionPrompt": true,
   "permissions": {
     "allow": [
       "WebSearch"
@@ -18,6 +13,7 @@
       "/tmp"
     ]
   },
+  "model": "claude-opus-4-6[1m]",
   "enabledPlugins": {
     "feature-dev@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
@@ -45,6 +41,10 @@
       }
     }
   },
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "medium",
+  "showClearContextOnPlanAccept": true,
+  "skipDangerousModePermissionPrompt": true,
   "statusLine-backup": {
     "type": "command",
     "command": "npx ccusage statusline"
