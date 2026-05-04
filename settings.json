@@ -13,7 +13,6 @@
       "/tmp"
     ]
   },
-  "model": "claude-opus-4-6[1m]",
   "enabledPlugins": {
     "feature-dev@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
@@ -42,9 +41,10 @@
     }
   },
   "alwaysThinkingEnabled": true,
-  "effortLevel": "medium",
+  "effortLevel": "low",
   "showClearContextOnPlanAccept": true,
   "skipDangerousModePermissionPrompt": true,
+  "theme": "light",
   "statusLine-backup": {
     "type": "command",
     "command": "npx ccusage statusline"
