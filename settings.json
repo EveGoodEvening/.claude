@@ -44,7 +44,7 @@
   "effortLevel": "low",
   "showClearContextOnPlanAccept": true,
   "skipDangerousModePermissionPrompt": true,
-  "theme": "light",
+  "theme": "dark",
   "statusLine-backup": {
     "type": "command",
     "command": "npx ccusage statusline"
