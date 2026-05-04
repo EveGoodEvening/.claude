@@ -17,39 +17,59 @@ Get an independent answer, implementation plan, or debugging analysis from OpenA
 
 ### First call (new session)
 
-Use `codex exec` to start a new session. Always write output to a temp file for reliable capture. Select the sandbox level based on the mode.
+Use `codex exec` to start a new session. Write the prompt to a temp file, invoke Codex with that file redirected into stdin, and capture Codex's response with `-o "$TMPFILE"`. Select the sandbox level based on the mode.
 
 ```bash
 TMPFILE=$(mktemp /tmp/codex-ask.XXXXXXXX)
 ERRFILE=$(mktemp /tmp/codex-ask-err.XXXXXXXX)
+PROMPTFILE=$(mktemp /tmp/codex-ask-prompt.XXXXXXXX)
+
+cat > "$PROMPTFILE" <<'EOF'
+[Prompt text goes here]
+EOF
 
 [ -f "$HOME/.codex/.env" ] && . "$HOME/.codex/.env"
-codex exec \
+if codex exec \
   -m gpt-5.5 \
   -c 'model_reasoning_effort="xhigh"' \
   -s "$SANDBOX" \
   -o "$TMPFILE" \
-  "$PROMPT" 2> "$ERRFILE"
-cat "$TMPFILE"
+  - < "$PROMPTFILE" 2> "$ERRFILE"; then
+  cat "$TMPFILE"
+else
+  code=$?
+  cat "$ERRFILE"
+  exit "$code"
+fi
 ```
 
 After execution, look for the session ID in the stdout/stderr output (a line containing `session id: <uuid>` or similar). **Remember this session ID in your conversation context** — you will need it if the user wants to follow up.
 
 ### Resume call (continuing a session)
 
-When the user wants to follow up on a previous Codex discussion, use `codex exec resume` with the stored session ID:
+When the user wants to follow up on a previous Codex discussion, use `codex exec resume` with the stored session ID and pass the follow-up prompt through explicit stdin:
 
 ```bash
 TMPFILE=$(mktemp /tmp/codex-ask.XXXXXXXX)
 ERRFILE=$(mktemp /tmp/codex-ask-err.XXXXXXXX)
+PROMPTFILE=$(mktemp /tmp/codex-ask-prompt.XXXXXXXX)
+
+cat > "$PROMPTFILE" <<'EOF'
+[Follow-up prompt text goes here]
+EOF
 
 [ -f "$HOME/.codex/.env" ] && . "$HOME/.codex/.env"
-codex exec resume "$SESSION_ID" \
+if codex exec resume "$SESSION_ID" \
   -m gpt-5.5 \
   -c 'model_reasoning_effort="xhigh"' \
   -o "$TMPFILE" \
-  "$FOLLOW_UP_PROMPT" 2> "$ERRFILE"
-cat "$TMPFILE"
+  - < "$PROMPTFILE" 2> "$ERRFILE"; then
+  cat "$TMPFILE"
+else
+  code=$?
+  cat "$ERRFILE"
+  exit "$code"
+fi
 ```
 
 **Note:** `codex exec resume` does not accept the `-s` (sandbox) flag. The sandbox level is inherited from the original session. Since all codex-ask modes use `danger-full-access`, this is not an issue.
@@ -62,8 +82,11 @@ cat "$TMPFILE"
 - `-c 'model_reasoning_effort="xhigh"'` — maximum thinking effort
 - `-s "$SANDBOX"` — sandbox level, varies by mode (see below)
 - `-o "$TMPFILE"` — write the last assistant message to a file for clean capture. Note: stdout still contains metadata (headers, `session id:` line) which is needed for session management
+- `- < "$PROMPTFILE"` — the lone `-` tells Codex to read the prompt from stdin, and the redirect provides bounded file input
 
-**Critical — temp file creation:** Use `mktemp` exactly as shown. Do NOT add a file extension after the X's — `mktemp` only replaces trailing X's. The template `/tmp/codex-ask.XXXXXXXX` (no extension) must be used verbatim.
+**Critical — stdin handling:** Always include the lone `-` positional argument and redirect from `"$PROMPTFILE"` for both new and resumed sessions. Do not pass a large prompt as a shell argument, do not omit stdin, and do not use a pipeline that could leave Codex waiting. If Codex prints `Reading additional input from stdin...` and does not progress, stop and fix the invocation rather than waiting.
+
+**Critical — temp file creation:** Use `mktemp` exactly as shown. Do NOT add a file extension after the X's — `mktemp` only replaces trailing X's. The templates `/tmp/codex-ask.XXXXXXXX`, `/tmp/codex-ask-err.XXXXXXXX`, and `/tmp/codex-ask-prompt.XXXXXXXX` (no extensions) must be used verbatim.
 
 **Error handling:** If codex returns a non-zero exit code, read stderr, report the error to the user, and do not retry automatically.
 

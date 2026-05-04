@@ -15,7 +15,10 @@ Each iteration:
    - No under-marking: every code change has a corresponding `[x]` task
    - No skips: no doable unchecked tasks remain that should have been done in this chunk
 6. **Fix** according to codex's feedback unless codex says all good.
-7. **Converge** — If you made changes from the review → go back to step 5 (re-review). If no new changes → `/commit-push` the changes then STOP. Ralph will restart you at step 1 for the next chunk.
+7. **Converge** — If you made changes from the review → go back to step 5 (re-review). If no new changes → `/commit-push` the changes, then reread $2 before stopping:
+   - If any unchecked task is still doable without guessing or external blockers, continue at step 1 for the next coherent chunk.
+   - If remaining unchecked tasks are blocked by missing tools, credentials, approvals, or ambiguous requirements, record why they are blocked in your response and then STOP.
+   - Do not treat one committed chunk as loop completion when more doable work remains.
 
 ## How to invoke ralph-loop
 
@@ -36,9 +39,18 @@ The ralph-loop skill runs a shell setup script that cannot handle backticks, spe
 
 ## When the loop ends
 
-After the implement-review cycle converges, clean up the loop files:
+Before cleaning up, run this mandatory pre-cleanup gate:
+
+1. Reread $2 and list every remaining unchecked `- [ ]` task.
+2. Classify each unchecked task as either:
+   - **doable now** — enough context and local capability exist to implement and verify it, or
+   - **blocked/deferred** — it needs missing tooling, credentials, external services, user decisions, or explicit deferral.
+3. If any task is **doable now**, do NOT clean up the loop files. Continue the Ralph loop at step 1 for the next coherent chunk.
+4. Only clean up when every task is `[x]`, or all remaining unchecked tasks are explicitly blocked/deferred and you have reported why.
+
+After that gate passes, clean up the loop files:
 ```
 rm -f .claude/ralph-loop-prompt.local.md .claude/ralph-loop.local.md
 ```
 
-**Important:** Do NOT implement tasks directly. Write the prompt file, then invoke `/ralph-loop` and let it drive the implement-review cycle.
+**Important:** Do NOT implement tasks directly. Write the prompt file, then invoke `/ralph-loop` and let it drive the implement-review cycle. Do NOT remove the Ralph loop files merely because one chunk was committed; cleanup means the whole requested loop is complete or blocked.

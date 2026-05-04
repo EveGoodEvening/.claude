@@ -17,21 +17,31 @@ Get an independent code review from OpenAI's Codex CLI using gpt-5.5 with maximu
 
 ## Invoking Codex
 
-Use `codex exec` to run a one-shot review. Always write output to a temp file for reliable capture.
+Use `codex exec` to run a one-shot review. Write the prompt to a temp file, invoke Codex with that file redirected into stdin, and capture Codex's response with `-o "$TMPFILE"`. This avoids Codex waiting forever for additional interactive input.
 
 ```bash
 TMPFILE=$(mktemp /tmp/codex-review.XXXXXXXX)
 ERRFILE=$(mktemp /tmp/codex-review-err.XXXXXXXX)
+PROMPTFILE=$(mktemp /tmp/codex-prompt.XXXXXXXX)
+
+cat > "$PROMPTFILE" <<'EOF'
+[Prompt text goes here]
+EOF
 
 [ -f "$HOME/.codex/.env" ] && . "$HOME/.codex/.env"
-codex exec \
+if codex exec \
   -m gpt-5.5 \
   -c 'model_reasoning_effort="xhigh"' \
   -s danger-full-access \
   --ephemeral \
   -o "$TMPFILE" \
-  "$PROMPT" 2> "$ERRFILE"
-cat "$TMPFILE"
+  - < "$PROMPTFILE" 2> "$ERRFILE"; then
+  cat "$TMPFILE"
+else
+  code=$?
+  cat "$ERRFILE"
+  exit "$code"
+fi
 ```
 
 **Flags explained:**
@@ -40,8 +50,11 @@ cat "$TMPFILE"
 - `-s danger-full-access` — sandbox policy. Options: `read-only`, `workspace-write`, `danger-full-access`. Use `danger-full-access` in case Codex needs to run commands (e.g., build, lint, tests) to verify its findings.
 - `--ephemeral` — no conversation persistence, clean context
 - `-o "$TMPFILE"` — write output to file (avoids noisy stdout metadata)
+- `- < "$PROMPTFILE"` — the lone `-` tells Codex to read the prompt from stdin, and the redirect provides bounded file input
 
-**Critical — temp file creation:** You MUST use `mktemp` exactly as shown above. On macOS, `mktemp` only replaces the X's when they are the **last characters** of the template. Do NOT add a file extension (e.g., `.md`) after the X's — this causes `mktemp` to use the template literally without substitution, creating a file literally named with X's. The template `/tmp/codex-review.XXXXXXXX` (no extension) is correct and must be used verbatim.
+**Critical — stdin handling:** Always include the lone `-` positional argument and redirect from `"$PROMPTFILE"`. Do not pass a large prompt as a shell argument, do not omit stdin, and do not use a pipeline that could leave Codex waiting. If Codex prints `Reading additional input from stdin...` and does not progress, stop and fix the invocation rather than waiting.
+
+**Critical — temp file creation:** You MUST use `mktemp` exactly as shown above. On macOS, `mktemp` only replaces the X's when they are the **last characters** of the template. Do NOT add a file extension (e.g., `.md`) after the X's — this causes `mktemp` to use the template literally without substitution, creating a file literally named with X's. The templates `/tmp/codex-review.XXXXXXXX`, `/tmp/codex-review-err.XXXXXXXX`, and `/tmp/codex-prompt.XXXXXXXX` (no extensions) are correct and must be used verbatim.
 
 **Error handling:** If codex returns a non-zero exit code, read stderr for the error message. Report the error to the user and do not retry automatically — there may be an auth or config issue the user needs to resolve.
 
