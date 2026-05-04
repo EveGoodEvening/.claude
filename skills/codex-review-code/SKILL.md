@@ -96,7 +96,10 @@ Tell Codex what to review — a git command to run, file paths to read, or (rare
 ### 3. Focus areas (optional but recommended)
 If you or the user have specific concerns, list them. Examples: "pay special attention to error handling", "check for SQL injection", "verify the caching logic is correct".
 
-### 4. Output format instructions (required)
+### 4. Execution environment note (required)
+Tell Codex: "If you use Python, run `python3` instead of `python`."
+
+### 5. Output format instructions (required)
 Tell Codex exactly how to structure its response:
 
 ```
@@ -134,6 +137,7 @@ You are reviewing code changes in a git repository. Here is the context:
 **Focus areas:** Check that the rate limit configuration is correct, that the middleware ordering is right, and that error responses follow our existing API format.
 
 You have access to git and the filesystem. If you need more context, run git commands to explore. If you cannot access something, say so clearly.
+If you use Python, run `python3` instead of `python`.
 
 **What to review:** Run `git diff` to see the uncommitted changes, then review them.
 

@@ -164,7 +164,11 @@ Tell Codex which files, directories, or git commands to examine. Examples:
 - "Run `git log --oneline -20` to see recent changes"
 - "Read `config.toml` and `src/main.rs` for the relevant context"
 
-### 4. Output format (required)
+### 4. Execution environment note (required)
+
+Tell Codex: "If you use Python, run `python3` instead of `python`."
+
+### 5. Output format (required)
 
 Use the appropriate format for the mode:
 
@@ -244,6 +248,8 @@ This is a Java-Rust hybrid blockchain node (java-tron). The storage layer is bei
 
 Read `framework/src/main/java/org/tron/core/storage/spi/StorageSpiFactory.java` and any files it references. If you need more context, run git commands to explore.
 
+If you use Python, run `python3` instead of `python`.
+
 [... format instructions ...]
 ```
 
@@ -257,6 +263,8 @@ This is a Java-Rust hybrid blockchain node. We need to add support for a new tra
 
 Read `actuator/src/main/java/org/tron/core/actuator/VoteWitnessActuator.java` and `rust-backend/execution/src/` to understand both sides. If you need more context, explore freely.
 
+If you use Python, run `python3` instead of `python`.
+
 [... format instructions ...]
 ```
 
@@ -269,6 +277,8 @@ This is a Java-Rust hybrid blockchain node. After enabling remote execution mode
 **Issue:** The SHA256 state digest from embedded (Java) execution differs from remote (Rust) execution for TransferContract transactions.
 
 Run `git diff` to see recent changes. Read `framework/src/main/java/org/tron/core/execution/spi/RuntimeSpiImpl.java` and `rust-backend/execution/src/transfer.rs`. If you need more context, explore freely.
+
+If you use Python, run `python3` instead of `python`.
 
 [... format instructions ...]
 ```
