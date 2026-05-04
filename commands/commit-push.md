@@ -15,4 +15,4 @@ description: Create a git commit then push
 
 Based on the above changes, create a single git commit and push to origin.
 
-You have the capability to call multiple tools in a single response. Stage and create the commit using a single message. Do not use any other tools or do anything else. Do not send any other text or messages besides these tool calls. Do not add Claude Code attribution in the message.
+You have the capability to call multiple tools in a single response. Stage and create the commit using a single message. Do not use any other tools or do anything else. Do not send any other text or messages besides these tool calls unless any command fails. If any command fails, always report the failed command, exit code, and stderr before continuing. Do not add Claude Code attribution in the message.
