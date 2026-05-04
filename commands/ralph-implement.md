@@ -15,7 +15,7 @@ Each iteration:
    - No under-marking: every code change has a corresponding `[x]` task
    - No skips: no doable unchecked tasks remain that should have been done in this chunk
 6. **Fix** according to codex's feedback unless codex says all good.
-7. **Converge** — If you made changes from the review → go back to step 5 (re-review). If no new changes → commit the changes then STOP. Ralph will restart you at step 1 for the next chunk.
+7. **Converge** — If you made changes from the review → go back to step 5 (re-review). If no new changes → `/commit-push` the changes then STOP. Ralph will restart you at step 1 for the next chunk.
 
 ## How to invoke ralph-loop
 
