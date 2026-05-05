@@ -22,7 +22,7 @@ Use `codex exec` to run a one-shot review. Write the prompt to a temp file, invo
 ```bash
 TMPFILE=$(mktemp /tmp/codex-review.XXXXXXXX)
 ERRFILE=$(mktemp /tmp/codex-review-err.XXXXXXXX)
-PROMPTFILE=$(mktemp /tmp/codex-prompt.XXXXXXXX)
+PROMPTFILE=$(mktemp /tmp/codex-review-prompt.XXXXXXXX)
 
 cat > "$PROMPTFILE" <<'EOF'
 [Prompt text goes here]
@@ -54,7 +54,7 @@ fi
 
 **Critical — stdin handling:** Always include the lone `-` positional argument and redirect from `"$PROMPTFILE"`. Do not pass a large prompt as a shell argument, do not omit stdin, and do not use a pipeline that could leave Codex waiting. If Codex prints `Reading additional input from stdin...` and does not progress, stop and fix the invocation rather than waiting.
 
-**Critical — temp file creation:** You MUST use `mktemp` exactly as shown above. On macOS, `mktemp` only replaces the X's when they are the **last characters** of the template. Do NOT add a file extension (e.g., `.md`) after the X's — this causes `mktemp` to use the template literally without substitution, creating a file literally named with X's. The templates `/tmp/codex-review.XXXXXXXX`, `/tmp/codex-review-err.XXXXXXXX`, and `/tmp/codex-prompt.XXXXXXXX` (no extensions) are correct and must be used verbatim.
+**Critical — temp file creation:** You MUST use `mktemp` exactly as shown above. On macOS, `mktemp` only replaces the X's when they are the **last characters** of the template. Do NOT add a file extension (e.g., `.md`) after the X's — this causes `mktemp` to use the template literally without substitution, creating a file literally named with X's. The templates `/tmp/codex-review.XXXXXXXX`, `/tmp/codex-review-err.XXXXXXXX`, and `/tmp/codex-review-prompt.XXXXXXXX` (no extensions) are correct and must be used verbatim.
 
 **Error handling:** If codex returns a non-zero exit code, read stderr for the error message. Report the error to the user and do not retry automatically — there may be an auth or config issue the user needs to resolve.
 
