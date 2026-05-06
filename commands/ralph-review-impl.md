@@ -25,7 +25,7 @@ On re-review iterations (after fixes), tell Codex to also review any uncommitted
 3. **Decide:**
    - If nothing to incorporate (all discarded or no actionable feedback) → done, STOP.
    - Otherwise → proceed to step 4.
-4. **Fix** — Apply the changes you decided to incorporate.
+4. **Fix** — Apply the changes you decided to incorporate, then `/commit-push`.
 5. **Re-review** — You MUST go back to step 1. Do NOT emit `<promise>ALL CLEAN</promise>` here. Only Codex (in step 1) can declare ALL CLEAN — you cannot self-certify your own fixes.
 
 ## How to invoke ralph-loop
