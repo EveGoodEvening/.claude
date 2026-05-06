@@ -12,7 +12,7 @@ Each iteration:
 4. **Mark** completed tasks `[x]` in $2.
 5. **Review** — Run a subagent to check:
    - No over-marking: every `[x]` task is actually implemented
-   - No under-marking: every `[ ]` task is not implemented-but-forget-to-mark.
+   - No under-marking: no `[ ]` task has actually been implemented already
    - No skips: no doable unchecked tasks remain that should have been done in this chunk
 6. **Fix** according to the subagent's feedback unless the subagent says all good.
 7. **Converge** — If you made changes from the review → go back to step 5 (re-review). If no new changes → `/commit-push` the changes, then reread $2 before stopping:
