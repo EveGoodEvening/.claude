@@ -21,7 +21,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cmd=$(jq -r '.tool_input.command // \"\"'); if printf '%s\\n' \"$cmd\" | grep -Eq '(^|[;&|({][[:space:]]*)git[[:space:]]+commit([[:space:]]|$)' && printf '%s\\n' \"$cmd\" | grep -Eiq 'Co-Authored-By|Claude|Anthropic|noreply@anthropic\\.com|Generated with'; then printf '%s\\n' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Blocked git commit because the commit message contains forbidden Claude/AI attribution.\"}}'; fi",
+            "command": "cmd=$(jq -r '.tool_input.command // \"\"'); if printf '%s\\n' \"$cmd\" | grep -Eq '(^|[;&|({][[:space:]]*)git[[:space:]]+commit([[:space:]]|$)' && printf '%s\\n' \"$cmd\" | grep -Eiq 'Co-Authored-By|Opus|Sonnet|Haiku|Anthropic|noreply@anthropic\\.com|Generated with'; then printf '%s\\n' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Blocked git commit because the commit message contains forbidden Claude/AI attribution.\"}}'; fi",
             "timeout": 10,
             "statusMessage": "Checking commit attribution"
           }
