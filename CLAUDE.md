@@ -6,3 +6,4 @@
 ## Lessons
 
 + Planning slash commands should resolve blocking questions interactively before emitting final plans or todos; generated plans/todos should not contain `Open Questions`, `Need Decisions`, TBDs, or unresolved assumptions.
++ Advanced planning commands should preserve planning quality criteria: compare viable approaches, prefer mature/project-native solutions, and call out dependency/runtime/integration risks.

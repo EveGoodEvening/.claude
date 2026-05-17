@@ -8,6 +8,13 @@ $ARGUMENTS
 
 Core rule: the final plan from this command must not contain unresolved open questions, "need decisions", TBDs, optional unresolved forks, or unconfirmed assumptions. If a missing decision affects the implementation, ask the user first and wait for their answer.
 
+## Planning quality criteria
+
+- Compare meaningful implementation options when more than one viable approach exists; include tradeoffs, fit, cost, and why one path is recommended.
+- Prefer existing project patterns and mature ecosystem solutions over custom implementations unless there is a clear reason.
+- Call out dependency, version, runtime, integration, or compatibility risks that could affect implementation.
+- Consider maintainability and scalability where they materially affect the choice, without adding speculative complexity.
+
 ## Workflow
 
 1. Understand the context
