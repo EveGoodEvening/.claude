@@ -2,8 +2,3 @@
 
 + During your interaction with the user, if you find anything reusable in this project (e.g. version of a library, model name), especially about a fix to a mistake you made or a correction you received, you should take note in the `Lessons` section in the **repo-level** `CLAUDE.md` (at the repository root, NOT this global file) so you will not make the same mistake again.
 + Use `env.example` instead of `.env.example` for the `.env` example/template.
-
-## Lessons
-
-+ Planning slash commands should resolve blocking questions interactively before emitting final plans or todos; generated plans/todos should not contain `Open Questions`, `Need Decisions`, TBDs, or unresolved assumptions.
-+ Advanced planning commands should preserve planning quality criteria: compare viable approaches, prefer mature/project-native solutions, and call out dependency/runtime/integration risks.
