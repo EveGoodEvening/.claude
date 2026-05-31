@@ -11,6 +11,9 @@
 !skills/
 !skills/*
 !skills/**
+!archive/
+!archive/*
+!archive/**
 !agents/
 !agents/*
 !agents/**
