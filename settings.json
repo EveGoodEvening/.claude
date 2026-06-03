@@ -1,6 +1,5 @@
 {
-  "env": {
-  },
+  "env": {},
   "permissions": {
     "allow": [
       "WebSearch"
