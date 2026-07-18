@@ -14,7 +14,7 @@
       "/tmp"
     ]
   },
-  "model": "claude-fable-5[1m]",
+  "model": "gpt-5.6-sol",
   "hooks": {
     "PreToolUse": [
       {
@@ -66,12 +66,13 @@
     }
   },
   "alwaysThinkingEnabled": true,
-  "effortLevel": "xhigh",
+  "effortLevel": "medium",
   "showClearContextOnPlanAccept": true,
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
   "theme": "dark",
-  "model-bk": "claude-opus-4-6[1m]",
+  "model-bk": "claude-fable-5[1m]",
   "hooks-backup": {
     "Stop": [
       {
@@ -84,6 +85,5 @@
         ]
       }
     ]
-  },
-  "skipWorkflowUsageWarning": true
+  }
 }
