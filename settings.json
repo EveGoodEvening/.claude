@@ -8,7 +8,7 @@
       "Read(**/.env*)",
       "Edit(**/.env*)"
     ],
-    "defaultMode": "acceptEdits",
+    "defaultMode": "auto",
     "additionalDirectories": [
       "/tmp"
     ]
