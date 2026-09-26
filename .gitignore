@@ -11,6 +11,7 @@
 !skills/
 !skills/*
 !skills/**
+skills/synced/
 !archive/
 !archive/*
 !archive/**
