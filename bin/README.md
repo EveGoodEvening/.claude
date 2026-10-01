@@ -9,7 +9,7 @@ heavy-gate [-n SLOTS] [-m MEMORY_MAX] [-l LABEL] -- cmd args...
 heavy-gate --status    # slot holders + free memory
 ```
 
-- 2 slots machine-wide (flock files in `/tmp/heavy-gate`, same as OMP). `-n` is the number of browsers the command starts; prefer 1 (`--workers=1`).
+- 2 slots machine-wide (flock files in `/tmp/heavy-gate`, same as OMP). `-n` is the most browsers running at once, not a worker count. Playwright Test runs one browser per worker (default: half the CPU cores), so `--workers=1` keeps it to one; tests that call `launch()` themselves add more. Other runners use their own flag (Jest `--runInBand`, etc.).
 - Starts a command only while MemAvailable >= 4500 MiB, with launches spaced 20 s apart.
 - Runs the command in its own systemd scope capped at 6G (`-m`), `oom_score_adj` 500. Refuses to run if the user systemd manager or isolation is unavailable.
 - Waits for capacity instead of failing: run it in the background, never under `timeout`.
