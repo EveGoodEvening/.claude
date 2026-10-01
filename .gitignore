@@ -5,6 +5,7 @@
 !env.example
 !CLAUDE.md
 !settings.json
+!AGENTS.md
 !commands/
 !commands/*
 !commands/**
@@ -21,3 +22,5 @@ skills/synced/
 !bin/
 !bin/*
 !bin/**
+!tests/
+!tests/heavy_gate_test.py
