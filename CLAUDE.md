@@ -1,6 +1,7 @@
 # CLAUDE.md
 
 + During your interaction with the user, if you find anything reusable in this project (e.g. version of a library, model name), especially about a fix to a mistake you made or a correction you received, you should take note in the `Lessons` section in the **repo-level** `AGENTS.md` (at the repository root, NOT this global file) so you will not make the same mistake again.
++ Docker-published Compose ports can bypass expected UFW `deny incoming` behavior through Docker iptables chains; local/dev service ports should bind explicitly to `127.0.0.1` in `ports` mappings on cloud hosts unless public exposure is intended.
 + Memory is shared by every project, session and agent on this machine, and one OOM can kill a whole session. Limit heavy work at launch time by concurrency and free memory, not by agent count:
   - Run heavy commands as `~/.claude/bin/heavy-gate [-n N] [-m 6G] [-l label] -- <cmd>`. Heavy = any browser launch (Playwright/Puppeteer/Selenium, screenshot/smoke/e2e scripts even if the project has its own gate), Electron, emulators, or anything over ~2 GiB. `-n` is the number of browsers started; prefer 1 (`--workers=1`).
   - The gate (2 slots machine-wide, shared with OMP) waits for capacity instead of failing: run it with `run_in_background: true` and never inside `timeout`. Never change its `HEAVY_GATE_*` settings, and if it refuses because isolation is unavailable, do not run the command uncapped.
